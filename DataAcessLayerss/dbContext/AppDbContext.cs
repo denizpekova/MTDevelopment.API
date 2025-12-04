@@ -1,24 +1,20 @@
 ﻿using EntityLayer.Concrete;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
 
 namespace DataAcessLayerss.Context
 {
     public class AppDbContext : DbContext
     {
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-            const string connString =
-                "server=89.252.187.226;port=3306;database=pekovaco_mtguards;user=pekovaco_mtguards;password=0#2ENljW6dwm!qpz;";
-
-            var serverVersion = ServerVersion.AutoDetect(connString);
-
-            optionsBuilder.UseMySql(connString, serverVersion);
         }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+            optionsBuilder.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=lisanceTest;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=True;Application Intent=ReadWrite;Multi Subnet Failover=False");
+        }
 
         public DbSet<license> Licenses { get; set; }
     }
