@@ -2,6 +2,7 @@
 using EntityLayer.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MTAPI.Models;
 
 namespace MTAPI.Controllers
 {
@@ -15,40 +16,76 @@ namespace MTAPI.Controllers
             this.licenseServices = licenseServices;
         }
 
-        [HttpGet]
         [HttpGet("getAll")]
         public IActionResult GetAll()
         {
             var result = licenseServices.GetAllLicenses();
-            return Ok(result);
 
+            if (result == null || !result.Any())
+            {
+                var notFound = new Response<List<license>>
+                {
+                    Success = false,
+                    StatusCode = 404,
+                    Message = "Lisans bulunamadı.",
+                    Data = null
+                };
+                return NotFound(notFound);
+            }
+            
+            var sucesssResponse = new Response<List<license>>
+            {
+                Success = true,
+                StatusCode = 200,
+                Message = "Lisanslar başarıyla getirildi.",
+                Data = result,
+                Count = result.Count
+            };
+
+            return Ok(sucesssResponse);
         }
-        [HttpGet]
+
         [HttpGet("getById/{key}")]
         public IActionResult Get(string key)
         {
             if (string.IsNullOrEmpty(key))
             {
-                return BadRequest(new { success = false, message = "Lisans anahtarı boş olamaz." });
+                var badRequest = new Response<license>
+                {
+                    Success = false,
+                    StatusCode = 400,
+                    Message = "Lisans anahtarı boş olamaz.",
+                    Data = null
+                };
+
+                return BadRequest(badRequest);
             }
 
-            try
+            var result = licenseServices.GetLicenseByKey(key);
+            if (result == null)
             {
-                var result = licenseServices.GetLicenseByKey(key);
-                if (result == null)
+                var notFound = new Response<license>
                 {
-                    return NotFound(new { success = false, message = "Lisans bulunamadı." });
-                }
-                return Ok(new { success = true, data = result });
+                    Success = false,
+                    StatusCode = 404,
+                    Message = "Lisans bulunamadı.",
+                    Data = null
+                };
+
+                return NotFound(notFound);
             }
-            catch (Exception ex)
+            var successResponse = new Response<license>
             {
-                return StatusCode(500, new { success = false, message = $"Lisans aranırken hata: {ex.Message}" });
-            }
+                Success = true,
+                StatusCode = 200,
+                Message = "Lisans başarıyla getirildi.",
+                Data = result
+            };
+
+            return Ok(successResponse);      
         }
 
-        [HttpPost]
-        [Route("create")]
+        [HttpPost("create")]
         public IActionResult createLisans([FromBody] license newLicense)
         {
             if (!ModelState.IsValid)
@@ -56,19 +93,20 @@ namespace MTAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            try
+       
+            var lisans = licenseServices.AddLicense(newLicense);
+            var successResponse = new Response<license>
             {
-                var lisans = licenseServices.AddLicense(newLicense);
-                return Ok(new { success = true, data = lisans, message = "Lisans başarıyla oluşturuldu." });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, message = $"Lisans oluşturulurken hata: {ex.Message}" });
-            }
+                Success = true,
+                StatusCode = 201,
+                Message = "Lisans başarıyla oluşturuldu.",
+                Data = lisans
+            };
+            return Ok(successResponse);
+           
         }
 
-        [HttpPut]
-        [Route("update")]
+        [HttpPut("update")]
         public IActionResult updateLisans([FromBody] license updateLisans)
         {
             if (!ModelState.IsValid)
@@ -76,39 +114,55 @@ namespace MTAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            try
+      
+            var lisansUpdate = licenseServices.UpdateLicense(updateLisans);
+            if (lisansUpdate == null)
             {
-                var lisansUpdate = licenseServices.UpdateLicense(updateLisans);
-                if (lisansUpdate == null)
+                var notFound = new Response<license>
                 {
-                    return NotFound(new { success = false, message = "Güncellenecek lisans bulunamadı." });
-                }
-                return Ok(new { success = true, data = lisansUpdate, message = "Lisans başarıyla güncellendi." });
+                    Success = false,
+                    StatusCode = 404,
+                    Message = "Güncellenecek lisans bulunamadı.",
+                    Data = null
+                };
+                return NotFound(notFound);
             }
-            catch (Exception ex)
+
+            var sucessResponse = new Response<license>
             {
-                return StatusCode(500, new { success = false, message = $"Lisans güncellenirken hata: {ex.Message}" });
-            }
+                Success = true,
+                StatusCode = 200,
+                Message = "Lisans başarıyla güncellendi.",
+                Data = lisansUpdate
+            };
+            return Ok(sucessResponse);          
         }
 
-        [HttpDelete]
-        [Route("delete/{key}")]
+        [HttpDelete("delete/{key}")]
         public IActionResult deleteLisans(string key)
         {
             if (string.IsNullOrEmpty(key))
             {
-                return BadRequest(new { success = false, message = "Lisans anahtarı boş olamaz." });
+                var badRequest = new Response<license>
+                {
+                    Success = false,
+                    StatusCode = 400,
+                    Message = "Lisans anahtarı boş olamaz.",
+                    Data = null
+                };
+                return BadRequest(badRequest);
             }
-            try
-            {
-                licenseServices.DeleteLicense(key);
-                return Ok(new { success = true, message = "Lisans başarıyla silindi." });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, message = $"Lisans silinirken hata: {ex.Message}" });
-            }
-        }
 
+            licenseServices.DeleteLicense(key);
+
+            var sucessResult = new Response<license>
+            {
+                Success = true,
+                StatusCode = 200,
+                Message = "Lisans başarıyla silindi.",
+                Data = null
+            };
+            return Ok(sucessResult);
+         }
     }
 }

@@ -16,7 +16,6 @@ namespace MTAPI.Controllers
             this.productServices = productServices;
         }
 
-        [HttpGet]
         [HttpGet("getAll")]
         public IActionResult GetAll()
         {
@@ -24,7 +23,6 @@ namespace MTAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
         [HttpGet("getById/{id}")]
         public IActionResult Get(int id)
         {
@@ -36,7 +34,6 @@ namespace MTAPI.Controllers
             return Ok(new { success = true, data = result });
         }
 
-        [HttpGet]
         [HttpGet("getByCategory/{category}")]
         public IActionResult GetByCategory(string category)
         {
@@ -44,8 +41,7 @@ namespace MTAPI.Controllers
             return Ok(new { success = true, data = result });
         }
 
-        [HttpPost]
-        [Route("add")]
+        [HttpPost("add")]
         public IActionResult AddProduct([FromBody] Products newProduct)
         {
             if (!ModelState.IsValid)
@@ -63,8 +59,7 @@ namespace MTAPI.Controllers
             }
         }
 
-        [HttpPut]
-        [Route("update")]
+        [HttpPut("update")]
         public IActionResult UpdateProduct([FromBody] Products updatedProduct)
         {
             if (!ModelState.IsValid)
@@ -82,8 +77,7 @@ namespace MTAPI.Controllers
             }
         }
 
-        [HttpDelete]
-        [Route("delete/{id}")]
+        [HttpDelete("delete/{id}")]
         public IActionResult DeleteProduct(int id)
         {
             try

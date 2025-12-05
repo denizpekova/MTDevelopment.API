@@ -15,7 +15,7 @@ namespace DataAcessLayerss
 
         Products UpdateProducts(Products products);
 
-        List<Products> getProductsByCategory(string category);
+        Task<List<Products>> getProductsByCategory(string category);
 
         void DeleteProducts(int id);
     }

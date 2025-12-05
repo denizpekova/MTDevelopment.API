@@ -16,9 +16,12 @@ builder.Services.AddScoped<ILicenseServices, LicenseServices>();
 builder.Services.AddScoped<IProdutsRepository, ProductsRepository>();
 builder.Services.AddScoped<IProductServices, ProductService>();
 builder.Services.AddDbContext<AppDbContext>();
+builder.Services.AddSwaggerGen();
 
 
 var app = builder.Build();
+
+
 
 app.UseCors(x => x
     .AllowAnyOrigin()
@@ -28,7 +31,9 @@ app.UseCors(x => x
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+ //   app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
 app.UseHttpsRedirection();

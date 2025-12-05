@@ -37,7 +37,7 @@ namespace DataAcessLayerss
             return dbContexts.Products.ToList();
         }
 
-        public List<Products> getProductsByCategory(string category)
+        public async Task<List<Products>> getProductsByCategory(string category)
         {
             return dbContexts.Products.Where(p => p.Category == category).ToList();
         }

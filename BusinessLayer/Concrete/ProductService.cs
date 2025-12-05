@@ -31,9 +31,9 @@ namespace BusinessLayer.Concrete
             return produtsRepository.GetAllProducts();
         }
 
-        public List<Products> getProductsByCategory(string category)
+        public async Task<List<Products>> getProductsByCategory(string category)
         {
-            return produtsRepository.getProductsByCategory(category);
+            return await produtsRepository.getProductsByCategory(category);
         }
 
         public Products GetProductsById(int id)
