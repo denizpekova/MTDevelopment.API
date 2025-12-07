@@ -31,6 +31,11 @@ namespace BusinessLayer.Concrete
             return licenseRepository.GetAllLicenses();
         }
 
+        public license getLicenseByID(int ID)
+        {
+            return licenseRepository.getLicenseByID(ID);
+        }
+
         public license GetLicenseByKey(string licenseKey)
         {
             return licenseRepository.GetLicenseByKey(licenseKey);

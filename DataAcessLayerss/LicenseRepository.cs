@@ -37,6 +37,11 @@ namespace DataAcessLayerss
             return dbContexts.Licenses.ToList();
         }
 
+        public license getLicenseByID(int ID)
+        {
+            return dbContexts.Licenses.Find(ID);
+        }
+
         public license GetLicenseByKey(string licenseKey)
         {
             return dbContexts.Licenses.FirstOrDefault(l => l.LicenseKey == licenseKey);

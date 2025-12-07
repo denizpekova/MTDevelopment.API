@@ -1,5 +1,6 @@
 ﻿using DataAcessLayerss.Context;
 using EntityLayer.Concrete;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -39,7 +40,7 @@ namespace DataAcessLayerss
 
         public async Task<List<Products>> getProductsByCategory(string category)
         {
-            return dbContexts.Products.Where(p => p.Category == category).ToList();
+            return await dbContexts.Products.Where(p => p.Category == category).ToListAsync();
         }
 
         public Products GetProductsById(int id)

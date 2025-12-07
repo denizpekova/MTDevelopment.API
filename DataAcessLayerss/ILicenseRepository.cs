@@ -12,6 +12,7 @@ namespace DataAcessLayerss
         license AddLicense(license license);
         license GetLicenseByKey(string licenseKey);
         license UpdateLicense(license license);
+        license getLicenseByID(int ID);
         void DeleteLicense(string licenseKey);
     }
 }
