@@ -65,9 +65,8 @@ namespace MTAPI.Controllers
         public IActionResult UpdateProduct([FromBody] Products updatedProduct)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
+
        
             var result = productServices.UpdateProducts(updatedProduct);
             if (result == null)      
