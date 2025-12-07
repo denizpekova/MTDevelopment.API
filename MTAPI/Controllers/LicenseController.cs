@@ -1,7 +1,9 @@
-﻿using BusinessLayer.Abstrack;
+﻿using AutoMapper;
+using BusinessLayer.Abstrack;
 using EntityLayer.Concrete;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using MTAPI.DTO;
 using MTAPI.Extansions;
 using MTAPI.Models;
 
@@ -12,9 +14,12 @@ namespace MTAPI.Controllers
     public class LicenseController : ControllerBase
     {
         private readonly ILicenseServices licenseServices;
-        public LicenseController(ILicenseServices licenseServices)
+        private readonly IMapper _mapper;
+
+        public LicenseController(ILicenseServices licenseServices, IMapper mapper)
         {
             this.licenseServices = licenseServices;
+            _mapper = mapper;
         }
 
         [HttpGet("getAll")]
@@ -55,28 +60,21 @@ namespace MTAPI.Controllers
         }
 
         [HttpPut("update/{id}")]
-        public IActionResult updateLisans(int id, [FromBody] license updateLisans)
+        public IActionResult updateLisans(int id, [FromBody] LicenseUpdateDTO updateLisans)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-
             var lisansByKey = licenseServices.getLicenseByID(id);
             if (lisansByKey == null)
-                 throw new GlobalNotFoundException(id);
-
-            
+                throw new GlobalNotFoundException(id);
 
 
-            lisansByKey.LicenseKey = updateLisans.LicenseKey;
-            lisansByKey.AllowedIp = updateLisans.AllowedIp;
-            lisansByKey.ServerName = updateLisans.ServerName;
-            lisansByKey.Status = updateLisans.Status;
-            lisansByKey.ExpireDate = updateLisans.ExpireDate;
+            _mapper.Map(updateLisans, lisansByKey);
 
             var lisansUpdate = licenseServices.UpdateLicense(lisansByKey);
 
-            return Ok(lisansByKey);          
+            return Ok(lisansUpdate); 
         }
 
         [HttpDelete("delete/{key}")]

@@ -4,6 +4,7 @@ using DataAcessLayerss;
 using DataAcessLayerss.Context;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using MTAPI.AutoMapper.Profiles;
 using MTAPI.Extansions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.ConfigureRepositoryWrapper();
 builder.Services.ConfigureServiceWrapper();
+builder.Services.AddAutoMapper(typeof(ProfileMapper));
 
 var app = builder.Build();
 
